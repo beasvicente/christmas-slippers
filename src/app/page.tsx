@@ -1,69 +1,83 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/Button";
+
+const colors = [
+  { name: "Christmas Cream", hex: "#F8F1E4" },
+  { name: "Cranberry Red", hex: "#922E3A" },
+  { name: "Forest Green", hex: "#254936" },
+  { name: "Antique Gold", hex: "#C59A50" },
+  { name: "Cocoa Brown", hex: "#513B32" },
+  { name: "Snow White", hex: "#FFFDF8" },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="min-h-screen px-6 py-20">
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.3em] text-cranberry">
+            Est. Christmas 2026
+          </p>
+
+          <span className="text-4xl text-gold" aria-hidden="true">
+            ✳
+          </span>
+
+          <h1 className="mt-5 font-display text-5xl leading-tight text-cranberry sm:text-7xl">
+            The Christmas
+            <br />
+            Slipper Workshop
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-foreground">
+            A little Christmas magic, one stitch at a time. Handmade with love,
+            designed by you.
+          </p>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Button>Enter the Workshop</Button>
+            <Button variant="secondary">Explore the Collection</Button>
+          </div>
+
+          <p className="mt-4 text-xs text-foreground/60">
+            Design system preview — buttons are not linked yet.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        <section className="mt-24 border-t border-gold/40 pt-12">
+          <h2 className="font-display text-3xl text-forest">
+            Our Christmas Palette
+          </h2>
+
+          <p className="mt-3 text-sm text-foreground/70">
+            Inspired by vintage holiday cards, cozy wool, and beautifully
+            wrapped Christmas presents.
+          </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {colors.map((color) => (
+              <div
+                key={color.name}
+                className="rounded-2xl bg-snow p-3 shadow-sm"
+              >
+                <div
+                  className="h-24 rounded-xl border border-foreground/10"
+                  style={{
+                    backgroundColor: color.hex,
+                  }}
+                />
+                <h3 className="mt-3 font-sans text-sm font-semibold">
+                  {color.name}
+                </h3>
+                <p className="mt-1 text-xs text-foreground/60">{color.hex}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <footer className="mt-20 text-center text-xs text-foreground/60">
+          Made with love and a little Christmas magic.
+        </footer>
+      </div>
+    </main>
   );
 }
