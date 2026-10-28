@@ -39,6 +39,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgb(197 154 80 / 7%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 80% 60%, rgb(81 59 50 / 5%) 0 1px, transparent 1.5px);
+  background-size: 22px 22px, 29px 29px;
+  content: "";
+  pointer-events: none;
+}
+
 h1,
 h2,
 h3,
@@ -56,8 +68,59 @@ h4 {
   outline-offset: 4px;
 }
 
+.storybook-frame {
+  box-shadow:
+    0 24px 70px rgb(81 59 50 / 14%),
+    inset 0 0 0 1px rgb(197 154 80 / 28%);
+}
+
+.snowflake {
+  animation: snowfall var(--snow-duration, 8s) linear infinite;
+  animation-delay: var(--snow-delay, 0s);
+}
+
+.gentle-float {
+  animation: gentle-float 5s ease-in-out infinite;
+}
+
+@keyframes snowfall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -24px, 0) rotate(0deg);
+  }
+  12% {
+    opacity: 0.75;
+  }
+  88% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(18px, 320px, 0) rotate(180deg);
+  }
+}
+
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
