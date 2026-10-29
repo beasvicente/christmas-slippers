@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -15,6 +16,23 @@ import { PersonalDetails } from "./PersonalDetails";
 import { validateConfiguration } from "./configurationValidation";
 import { YarnColorPicker } from "./YarnColorPicker";
 import { YarnSwatch } from "./YarnSwatch";
+
+const SlipperViewer = dynamic(
+  () =>
+    import("@/components/three/SlipperViewer").then(
+      (module) => module.SlipperViewer,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid h-96 place-items-center rounded-[1.75rem] border border-gold/35 bg-snow px-8 text-center shadow-[0_20px_55px_rgba(81,59,50,0.12)]">
+        <p className="font-display text-xl font-semibold text-forest">
+          Opening the fitting-room window…
+        </p>
+      </div>
+    ),
+  },
+);
 
 const yarnZones: ReadonlyArray<{
   section: SlipperColorSection;
@@ -80,11 +98,11 @@ export function SlipperConfigurator() {
   const visibleErrors = validationRequested ? validation.errors : undefined;
 
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] xl:gap-12">
+    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_28rem] xl:gap-12">
       <form
         noValidate
         onSubmit={handleReview}
-        className="storybook-frame rounded-[2rem] bg-snow p-5 sm:p-8 lg:p-10"
+        className="storybook-frame order-2 rounded-[2rem] bg-snow p-5 sm:p-8 lg:order-none lg:p-10"
       >
         <PersonalDetails
           recipientName={configuration.recipientName}
@@ -153,7 +171,12 @@ export function SlipperConfigurator() {
         </div>
       </form>
 
-      <aside className="rounded-[1.75rem] border border-gold/35 bg-forest p-6 text-snow shadow-[0_20px_55px_rgba(37,73,54,0.18)] lg:sticky lg:top-6" aria-labelledby="wish-card-title">
+      <div className="contents lg:sticky lg:top-6 lg:order-none lg:block lg:space-y-5">
+        <div className="order-1 lg:order-none">
+          <SlipperViewer colors={configuration.colors} />
+        </div>
+
+      <aside className="order-3 rounded-[1.75rem] border border-gold/35 bg-forest p-6 text-snow shadow-[0_20px_55px_rgba(37,73,54,0.18)] lg:order-none" aria-labelledby="wish-card-title">
         <p className="text-[10px] font-bold tracking-[0.24em] text-gold uppercase">Your workshop card</p>
         <h2 id="wish-card-title" className="mt-2 font-display text-3xl font-semibold">Six little choices</h2>
 
@@ -195,10 +218,11 @@ export function SlipperConfigurator() {
         </ul>
 
         <div className="mt-7 rounded-xl border border-gold/25 bg-snow/8 p-4">
-          <p className="font-display text-lg text-gold">The fitting room is being decorated.</p>
-          <p className="mt-2 text-xs leading-5 text-snow/65">Your future slipper preview and gift submission will use this same configuration.</p>
+          <p className="font-display text-lg text-gold">A first look at the wish.</p>
+          <p className="mt-2 text-xs leading-5 text-snow/65">The colour study above and a future gift request use this same configuration.</p>
         </div>
       </aside>
+      </div>
     </div>
   );
 }
