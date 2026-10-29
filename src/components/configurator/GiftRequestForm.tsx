@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -128,13 +129,25 @@ export function GiftRequestForm({
         className="storybook-frame rounded-[2rem] bg-snow p-7 text-center outline-none sm:p-10"
         aria-labelledby="wish-accepted-title"
       >
-        <span className="mx-auto grid size-16 place-items-center rounded-full bg-forest text-2xl text-snow" aria-hidden="true">✓</span>
-        <h2 id="wish-accepted-title" className="mt-5 font-display text-4xl font-semibold text-cranberry">
-          Your Christmas wish is on its way! 🎄
-        </h2>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-foreground/70">
-          The notification was accepted for processing. This is not a purchase confirmation, final delivery receipt, or guarantee that the slippers will be made.
-        </p>
+        <div className="mx-auto grid max-w-3xl items-center gap-5 sm:grid-cols-[13rem_minmax(0,1fr)] sm:text-left">
+          <Image
+            src="/images/elf/elf-presents.png"
+            alt=""
+            width={1122}
+            height={1402}
+            sizes="(max-width: 639px) 12rem, 13rem"
+            className="mx-auto h-auto w-48 drop-shadow-[0_16px_18px_rgba(81,59,50,0.16)] sm:w-52"
+          />
+          <div>
+            <span className="mx-auto grid size-16 place-items-center rounded-full bg-forest text-2xl text-snow sm:mx-0" aria-hidden="true">✓</span>
+            <h2 id="wish-accepted-title" className="mt-5 font-display text-4xl font-semibold text-cranberry">
+              Your Christmas wish is on its way! 🎄
+            </h2>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-foreground/70">
+              The notification was accepted for processing. This is not a purchase confirmation, final delivery receipt, or guarantee that the slippers will be made.
+            </p>
+          </div>
+        </div>
       </section>
     );
   }

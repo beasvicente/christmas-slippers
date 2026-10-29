@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Button } from "@/components/ui/Button";
 import { HollySprig, StarDivider } from "./Decorations";
 
@@ -15,18 +17,28 @@ export function HandmadeStory() {
       <HollySprig className="absolute top-10 right-5 hidden w-36 rotate-12 opacity-35 sm:block lg:right-16" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.86fr_1.14fr] lg:gap-20">
-        <div className="storybook-frame relative mx-auto w-full max-w-lg -rotate-2 rounded-[2rem] bg-cream p-5 text-foreground sm:p-7">
-          <div className="rounded-[1.35rem] border border-dashed border-gold/60 px-7 py-10 sm:px-10 sm:py-12">
-            <span className="text-5xl text-cranberry" aria-hidden="true">“</span>
-            <blockquote className="-mt-3 font-display text-3xl leading-[1.22] font-medium text-forest italic sm:text-4xl">
-              The loveliest gifts still carry the warmth of the hands that made them.
-            </blockquote>
-            <div className="mt-8 flex items-center gap-4">
-              <span className="h-px w-10 bg-gold" />
-              <p className="text-[10px] font-bold tracking-[0.24em] text-cranberry uppercase">A note from the workshop</p>
+        <div className="relative mx-auto w-full max-w-lg pt-56 sm:pt-72">
+          <Image
+            src="/images/elf/elf-hugging-knits.png"
+            alt="The Christmas Slippers creator dressed as an elf, hugging a stack of hand-knitted garments."
+            width={1122}
+            height={1402}
+            sizes="(max-width: 1023px) 72vw, 28vw"
+            className="absolute top-0 left-1/2 h-auto w-[72%] -translate-x-1/2 drop-shadow-[0_18px_22px_rgba(18,39,28,0.28)] sm:w-[76%]"
+          />
+          <div className="storybook-frame relative -rotate-2 rounded-[2rem] bg-cream p-5 text-foreground sm:p-7">
+            <div className="rounded-[1.35rem] border border-dashed border-gold/60 px-7 py-9 sm:px-10 sm:py-10">
+              <span className="text-5xl text-cranberry" aria-hidden="true">“</span>
+              <blockquote className="-mt-3 font-display text-3xl leading-[1.22] font-medium text-forest italic sm:text-4xl">
+                The loveliest gifts still carry the warmth of the hands that made them.
+              </blockquote>
+              <div className="mt-8 flex items-center gap-4">
+                <span className="h-px w-10 bg-gold" />
+                <p className="text-[10px] font-bold tracking-[0.24em] text-cranberry uppercase">A note from the workshop</p>
+              </div>
             </div>
+            <span className="absolute -top-3 left-1/2 h-8 w-28 -translate-x-1/2 rotate-1 bg-gold/30 backdrop-blur-sm" aria-hidden="true" />
           </div>
-          <span className="absolute -top-3 left-1/2 h-8 w-28 -translate-x-1/2 rotate-1 bg-gold/30 backdrop-blur-sm" aria-hidden="true" />
         </div>
 
         <div>
