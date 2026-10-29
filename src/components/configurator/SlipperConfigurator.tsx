@@ -13,6 +13,7 @@ import {
 
 import { PersonalDetails } from "./PersonalDetails";
 import { ConfigurationSummary } from "./ConfigurationSummary";
+import { GiftRequestForm } from "./GiftRequestForm";
 import { SLIPPER_YARN_ZONES } from "./configuratorSections";
 import { validateConfiguration } from "./configurationValidation";
 import { YarnColorPicker } from "./YarnColorPicker";
@@ -88,22 +89,23 @@ export function SlipperConfigurator() {
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_28rem] xl:gap-12">
-      <form
-        noValidate
-        onSubmit={handleReview}
-        className="storybook-frame order-2 rounded-[2rem] bg-snow p-5 sm:p-8 lg:order-none lg:p-10"
-      >
-        <PersonalDetails
-          recipientName={configuration.recipientName}
-          euSize={configuration.euSize}
-          onRecipientNameChange={updateRecipientName}
-          onEuSizeChange={updateEuSize}
-          errors={visibleErrors}
-        />
+      <div className="order-2 space-y-8 lg:order-none">
+        <form
+          noValidate
+          onSubmit={handleReview}
+          className="storybook-frame rounded-[2rem] bg-snow p-5 sm:p-8 lg:p-10"
+        >
+          <PersonalDetails
+            recipientName={configuration.recipientName}
+            euSize={configuration.euSize}
+            onRecipientNameChange={updateRecipientName}
+            onEuSizeChange={updateEuSize}
+            errors={visibleErrors}
+          />
 
-        <div className="my-10 h-px bg-[linear-gradient(90deg,var(--gold)_40%,transparent_40%)] bg-[length:12px_1px]" aria-hidden="true" />
+          <div className="my-10 h-px bg-[linear-gradient(90deg,var(--gold)_40%,transparent_40%)] bg-[length:12px_1px]" aria-hidden="true" />
 
-        <section aria-labelledby="yarn-colours-title">
+          <section aria-labelledby="yarn-colours-title">
           <div className="flex items-start gap-4">
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-cranberry font-display text-lg font-semibold text-snow shadow-sm" aria-hidden="true">
               02
@@ -132,9 +134,9 @@ export function SlipperConfigurator() {
               />
             ))}
           </div>
-        </section>
+          </section>
 
-        <div className="mt-10 border-t border-gold/25 pt-8">
+          <div className="mt-10 border-t border-gold/25 pt-8">
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-display text-xl font-semibold text-forest">Ready for a little check?</p>
@@ -157,8 +159,14 @@ export function SlipperConfigurator() {
               </p>
             ) : null}
           </div>
-        </div>
-      </form>
+          </div>
+        </form>
+
+        <GiftRequestForm
+          configuration={configuration}
+          available={validationRequested && validation.isValid}
+        />
+      </div>
 
       <div className="contents lg:sticky lg:top-6 lg:order-none lg:block lg:space-y-5">
         <div className="order-1 lg:order-none">

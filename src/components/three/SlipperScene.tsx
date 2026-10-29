@@ -1,4 +1,4 @@
-import { Html, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -51,16 +51,6 @@ function CameraControls({
   );
 }
 
-function ModelLoading() {
-  return (
-    <Html center>
-      <p className="whitespace-nowrap rounded-full bg-snow/90 px-4 py-2 text-xs font-semibold text-forest shadow-sm">
-        Unwrapping the slippers…
-      </p>
-    </Html>
-  );
-}
-
 export function SlipperScene({
   materials,
   resetSignal,
@@ -82,7 +72,7 @@ export function SlipperScene({
       />
       <directionalLight position={[-4, 2.5, -3]} intensity={0.65} color="#D9E6DF" />
 
-      <Suspense fallback={<ModelLoading />}>
+      <Suspense fallback={null}>
         <SlipperModel materials={materials} />
       </Suspense>
 

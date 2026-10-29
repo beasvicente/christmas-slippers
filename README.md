@@ -20,6 +20,40 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Gift request email setup
+
+The workshop sends completed Christmas wishes to one private inbox through
+[Resend](https://resend.com). Create a Resend account, verify a sending domain,
+create an API key, then copy `.env.example` to `.env.local` and set:
+
+- `RESEND_API_KEY`
+- `GIFT_REQUEST_FROM_EMAIL` using the verified sending domain
+- `GIFT_REQUEST_TO_EMAIL` for the private workshop inbox
+
+Production also fails closed unless durable rate limiting is configured. Create
+an Upstash Redis database and set `UPSTASH_REDIS_REST_URL`,
+`UPSTASH_REDIS_REST_TOKEN`, and a long random
+`GIFT_REQUEST_RATE_LIMIT_SECRET`. Development and tests use a clearly scoped
+per-process fallback; that fallback is not considered reliable on serverless
+production deployments.
+
+To test safely, use Resend's testing addresses or a private inbox you control,
+submit a completed workshop design, and verify both HTML and plain-text content.
+Provider acceptance means the notification was queued for processing; it is not
+proof of final email delivery or a promise that slippers will be made. Automated
+tests inject a fake sender and never contact Resend.
+
+### Contact data and privacy
+
+The form collects the requester's name and email, plus an optional international
+WhatsApp number and Christmas message. A separate unticked checkbox records
+consent to manual contact about that specific wish. Contact details are included
+only in the private notification email; the application does not put them in
+public pages, URLs or analytics and does not implement automated WhatsApp
+messaging. Resend and the configured inbox provider process the notification,
+so production operators remain responsible for appropriate retention, access
+controls, deletion handling and an accurate public privacy notice.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

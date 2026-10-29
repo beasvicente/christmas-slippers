@@ -86,7 +86,7 @@ export default function WorkshopPage() {
       <footer className="border-t border-gold/25 bg-cranberry px-5 py-8 text-snow sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <p className="font-display text-xl font-semibold">Made for warm feet and thoughtful Christmas wishes.</p>
-          <p className="text-xs text-snow/65">Gift-request submission is not available yet.</p>
+          <p className="text-xs text-snow/65">Personalisation requests are reviewed by hand—no purchase is made here.</p>
         </div>
       </footer>
     </div>
