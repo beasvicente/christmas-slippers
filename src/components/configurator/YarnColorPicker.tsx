@@ -130,7 +130,7 @@ export function YarnColorPicker({
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="rounded-full px-2 py-1 text-[10px] font-bold tracking-[0.08em] text-cranberry uppercase underline decoration-gold/60 underline-offset-4 hover:text-forest"
+            className="min-h-11 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-cranberry uppercase underline decoration-gold/60 underline-offset-4 hover:text-forest"
             aria-label={`Clear ${label} colour`}
           >
             Clear
@@ -220,7 +220,7 @@ export function YarnColorPicker({
           ) : (
             <div className="mt-3 rounded-xl border border-dashed border-gold/40 bg-snow px-5 py-8 text-center">
               <p className="font-display text-lg text-forest">No yarns found on this shelf.</p>
-              <button type="button" onClick={() => setQuery("")} className="mt-2 text-sm font-semibold text-cranberry underline decoration-gold underline-offset-4">
+              <button type="button" onClick={() => setQuery("")} className="mt-2 min-h-11 px-3 text-sm font-semibold text-cranberry underline decoration-gold underline-offset-4">
                 Clear the search
               </button>
             </div>

@@ -100,7 +100,7 @@ export function SlipperViewer({ colors }: SlipperViewerProps) {
           type="button"
           onClick={() => setResetSignal((current) => current + 1)}
           disabled={!webGLAvailable}
-          className="rounded-full border border-forest/25 px-3 py-2 text-[10px] font-bold tracking-[0.08em] text-forest uppercase transition-colors hover:border-cranberry hover:text-cranberry disabled:cursor-not-allowed disabled:opacity-45"
+          className="min-h-11 rounded-full border border-forest/25 px-3 py-2 text-[10px] font-bold tracking-[0.08em] text-forest uppercase transition-colors hover:border-cranberry hover:text-cranberry disabled:cursor-not-allowed disabled:opacity-45"
         >
           Reset view
         </button>

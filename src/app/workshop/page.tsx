@@ -49,7 +49,7 @@ export default function WorkshopPage() {
               <span className="mt-1 hidden text-[9px] font-bold tracking-[0.24em] text-forest uppercase sm:block">The little workshop</span>
             </span>
           </Link>
-          <Link href="/" className="text-xs font-bold tracking-[0.12em] text-forest uppercase underline decoration-gold decoration-2 underline-offset-4 transition-colors hover:text-cranberry sm:text-sm">
+          <Link href="/" className="inline-flex min-h-11 items-center text-xs font-bold tracking-[0.12em] text-forest uppercase underline decoration-gold decoration-2 underline-offset-4 transition-colors hover:text-cranberry sm:text-sm">
             <span aria-hidden="true">← </span>Back home
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function WorkshopPage() {
       <footer className="border-t border-gold/25 bg-cranberry px-5 py-8 text-snow sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <p className="font-display text-xl font-semibold">Made for warm feet and thoughtful Christmas wishes.</p>
-          <p className="text-xs text-snow/65">Preview and gift submission are coming next.</p>
+          <p className="text-xs text-snow/65">Gift-request submission is not available yet.</p>
         </div>
       </footer>
     </div>

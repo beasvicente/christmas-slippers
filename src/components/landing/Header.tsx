@@ -24,9 +24,10 @@ export function Header() {
           <a href="#handmade" className="hidden text-sm font-semibold text-foreground/75 transition-colors hover:text-cranberry md:block">
             Our craft
           </a>
-          <div className="hidden min-[480px]:block">
-            <Button href="#how-it-works" className="px-5 py-2.5 text-xs sm:px-6 sm:text-sm" aria-label="Make My Slippers — see how the upcoming workshop will work">
-              Make My Slippers
+          <div>
+            <Button href="/workshop" className="px-4 py-2.5 text-xs sm:px-6 sm:text-sm" aria-label="Open the Christmas Slipper Workshop">
+              <span className="min-[480px]:hidden">Workshop</span>
+              <span className="hidden min-[480px]:inline">Make My Slippers</span>
             </Button>
           </div>
         </nav>

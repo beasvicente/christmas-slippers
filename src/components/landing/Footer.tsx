@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { HollySprig } from "./Decorations";
 
 export function Footer() {
@@ -16,7 +18,7 @@ export function Footer() {
             <a href="#top" className="text-snow/75 transition-colors hover:text-gold">Back to top</a>
             <a href="#how-it-works" className="text-snow/75 transition-colors hover:text-gold">How it works</a>
             <a href="#handmade" className="text-snow/75 transition-colors hover:text-gold">Our craft</a>
-            <span className="text-snow/45">Workshop soon</span>
+            <Link href="/workshop" className="text-snow/75 transition-colors hover:text-gold">Open workshop</Link>
           </nav>
         </div>
 

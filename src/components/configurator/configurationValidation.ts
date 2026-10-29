@@ -4,6 +4,8 @@ import {
   type SlipperConfiguration,
 } from "@/domain/slipper";
 
+import { getSlipperZoneLabel } from "./configuratorSections";
+
 export interface ConfigurationErrors {
   recipientName?: string;
   euSize?: string;
@@ -37,7 +39,8 @@ export function validateConfiguration(
       typeof field === "string" &&
       !errors.colors[field as SlipperColorSection]
     ) {
-      errors.colors[field as SlipperColorSection] = issue.message;
+      const section = field as SlipperColorSection;
+      errors.colors[section] = `Choose a DROPS Snow colour for ${getSlipperZoneLabel(section)}`;
     }
   }
 
