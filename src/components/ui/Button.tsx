@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
@@ -49,6 +50,14 @@ function LinkButton({
   href,
   ...props
 }: LinkButtonProps) {
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} className={buttonStyles(variant, className)} {...props}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <a href={href} className={buttonStyles(variant, className)} {...props}>
       {children}

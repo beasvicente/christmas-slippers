@@ -27,7 +27,7 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            <Button href="#how-it-works" className="w-full px-8 py-4 text-base sm:w-auto" aria-describedby="workshop-note">
+            <Button href="/workshop" className="w-full px-8 py-4 text-base sm:w-auto" aria-describedby="workshop-note">
               Make My Slippers
               <span aria-hidden="true">→</span>
             </Button>
@@ -37,7 +37,7 @@ export function Hero() {
             </a>
           </div>
           <p id="workshop-note" className="mt-5 text-xs leading-5 text-foreground/60">
-            The workshop is still being stitched together. Preview the three-step journey below.
+            Personalise your pair and explore its colours in the workshop. No gift request is sent yet.
           </p>
 
           <div className="mt-10 lg:hidden">

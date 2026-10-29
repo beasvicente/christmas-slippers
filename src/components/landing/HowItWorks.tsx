@@ -70,7 +70,7 @@ export function HowItWorks() {
         </ol>
 
         <p className="mx-auto mt-10 max-w-xl text-center text-xs leading-6 text-foreground/55">
-          The interactive workshop and gift-request form are coming soon. No orders or requests are collected on this preview page.
+          Personalisation and the interactive colour preview are ready in the workshop. Gift requests are not collected yet.
         </p>
       </div>
     </section>
