@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Button } from "@/components/ui/Button";
 import { HollySprig, Snowfall, StarDivider } from "./Decorations";
 import { SlipperArtwork } from "./SlipperArtwork";
@@ -48,9 +50,20 @@ export function Hero() {
         <div className="relative mx-auto w-full max-w-[650px] lg:ml-auto">
           <div className="gentle-float relative rotate-[1.5deg] rounded-[2.25rem] bg-snow p-4 shadow-[0_30px_90px_rgba(81,59,50,0.15)] sm:p-6">
             <div className="rounded-[1.7rem] border border-gold/45 p-3 sm:p-5">
-              <div className="relative overflow-hidden rounded-[1.35rem] bg-[radial-gradient(circle_at_center,#fffdf8_0%,#f4e7d3_100%)]">
-                <SlipperArtwork />
-                <span className="absolute right-5 bottom-5 rounded-full border border-gold/40 bg-snow/90 px-4 py-2 text-[9px] font-bold tracking-[0.2em] text-forest uppercase backdrop-blur-sm sm:right-8 sm:bottom-8 sm:text-[10px]">
+              <div className="relative aspect-square overflow-hidden rounded-[1.35rem] bg-[radial-gradient(circle_at_center,#fffdf8_0%,#f4e7d3_100%)]">
+                <div className="absolute inset-0 -translate-x-[9%] scale-[0.94] sm:-translate-x-[11%]">
+                  <SlipperArtwork />
+                </div>
+                <Image
+                  src="/images/elf/elf-knitting.png"
+                  alt="The Christmas Slippers creator dressed as a festive elf, seated and knitting."
+                  width={1122}
+                  height={1402}
+                  sizes="(max-width: 1023px) 48vw, 24vw"
+                  preload
+                  className="absolute right-[-5%] bottom-[-2%] h-auto w-[54%] drop-shadow-[0_18px_20px_rgba(81,59,50,0.18)] sm:right-[-2%] sm:w-[52%]"
+                />
+                <span className="absolute bottom-5 left-5 rounded-full border border-gold/40 bg-snow/90 px-4 py-2 text-[9px] font-bold tracking-[0.2em] text-forest uppercase backdrop-blur-sm sm:bottom-8 sm:left-8 sm:text-[10px]">
                   Knitted by hand
                 </span>
               </div>
