@@ -8,6 +8,8 @@ import {
   RateLimitConfigurationError,
   RateLimitUnavailableError,
 } from "../../../server/gift-request/rateLimit";
+import {apiMessage, localeFromRequest, validationMessage} from "../../../i18n/apiErrors";
+import type {AppLocale} from "../../../i18n/routing";
 
 const MAX_BODY_BYTES = 16 * 1024;
 
@@ -61,16 +63,18 @@ async function readJsonBody(request: Request) {
 
 function validationErrors(
   issues: ReadonlyArray<{ path: PropertyKey[]; message: string }>,
+  locale: AppLocale,
 ) {
   return Object.fromEntries(
-    issues.map(({ path, message }) => [path.join("."), message]),
+    issues.map(({ path }) => [path.join("."), validationMessage(locale, path)]),
   );
 }
 
 export async function POST(request: Request) {
+  const locale = localeFromRequest(request);
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     return Response.json(
-      { error: "Send this Christmas wish as JSON." },
+      {code: "mediaType", error: apiMessage(locale, "mediaType")},
       { status: 415 },
     );
   }
@@ -79,7 +83,7 @@ export async function POST(request: Request) {
     const limit = await checkGiftRequestRateLimit(request);
     if (!limit.allowed) {
       return Response.json(
-        { error: "Too many wishes were sent from this connection. Please try again soon." },
+        {code: "rateLimited", error: apiMessage(locale, "rateLimited")},
         {
           status: 429,
           headers: { "Retry-After": String(limit.retryAfter) },
@@ -103,8 +107,9 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return Response.json(
         {
-          error: "Please check the highlighted details and try again.",
-          fields: validationErrors(parsed.error.issues),
+          code: "validation",
+          error: apiMessage(locale, "validation"),
+          fields: validationErrors(parsed.error.issues, locale),
         },
         { status: 400 },
       );
@@ -121,7 +126,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         status: "accepted",
-        message: "Your Christmas wish was accepted for processing.",
+        message: apiMessage(locale, "accepted"),
       },
       { status: 202 },
     );
@@ -129,10 +134,8 @@ export async function POST(request: Request) {
     if (error instanceof InvalidRequestBodyError) {
       return Response.json(
         {
-          error:
-            error.reason === "too-large"
-              ? "This Christmas wish is too large to send."
-              : "We could not read this Christmas wish.",
+          code: error.reason === "too-large" ? "tooLarge" : "unreadable",
+          error: apiMessage(locale, error.reason === "too-large" ? "tooLarge" : "unreadable"),
         },
         { status: error.reason === "too-large" ? 413 : 400 },
       );
@@ -148,13 +151,13 @@ export async function POST(request: Request) {
         console.error(error.message);
       }
       return Response.json(
-        { error: "The Christmas postbox is not configured yet. Please try again later." },
+        {code: "unavailable", error: apiMessage(locale, "unavailable")},
         { status: 503 },
       );
     }
 
     return Response.json(
-      { error: "Your wish could not be sent just now. Your design is still here—please try again." },
+      {code: "delivery", error: apiMessage(locale, "delivery")},
       { status: 502 },
     );
   }

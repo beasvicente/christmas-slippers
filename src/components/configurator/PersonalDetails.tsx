@@ -1,4 +1,5 @@
 import { SizeSelector } from "./SizeSelector";
+import {useTranslations} from "next-intl";
 
 interface PersonalDetailsProps {
   recipientName: string;
@@ -18,6 +19,7 @@ export function PersonalDetails({
   onEuSizeChange,
   errors,
 }: PersonalDetailsProps) {
+  const t = useTranslations("Personal");
   return (
     <section aria-labelledby="personal-details-title">
       <div className="flex items-start gap-4">
@@ -26,10 +28,10 @@ export function PersonalDetails({
         </span>
         <div>
           <p className="text-[10px] font-bold tracking-[0.22em] text-gold uppercase">
-            Begin the wish
+            {t("eyebrow")}
           </p>
           <h2 id="personal-details-title" className="mt-1 font-display text-3xl font-semibold text-cranberry sm:text-4xl">
-            Who are these for?
+            {t("title")}
           </h2>
         </div>
       </div>
@@ -37,10 +39,10 @@ export function PersonalDetails({
       <div className="mt-8 space-y-8">
         <div>
           <label htmlFor="recipient-name" className="font-display text-xl font-semibold text-forest">
-            Recipient&apos;s name
+            {t("name")}
           </label>
           <p id="recipient-name-hint" className="mt-1 text-sm leading-6 text-foreground/60">
-            The name we&apos;ll write on this little Christmas wish.
+            {t("nameHint")}
           </p>
           <input
             id="recipient-name"
@@ -53,7 +55,7 @@ export function PersonalDetails({
             data-invalid={Boolean(errors?.recipientName)}
             aria-invalid={Boolean(errors?.recipientName)}
             aria-describedby={errors?.recipientName ? "recipient-name-error" : "recipient-name-hint"}
-            placeholder="e.g. Beatriz"
+            placeholder={t("namePlaceholder")}
             className="mt-3 w-full rounded-2xl border border-gold/40 bg-snow px-5 py-3.5 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] placeholder:text-foreground/35 hover:border-gold focus:border-cranberry focus:outline-none focus:ring-3 focus:ring-gold/30"
           />
           {errors?.recipientName ? (

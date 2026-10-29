@@ -1,4 +1,7 @@
+import {useTranslations} from "next-intl";
+
 export function SlipperArtwork() {
+  const t = useTranslations("Artwork");
   return (
     <svg
       viewBox="0 0 620 620"
@@ -7,10 +10,8 @@ export function SlipperArtwork() {
       className="h-auto w-full"
       fill="none"
     >
-      <title id="slipper-title">A pair of handmade Christmas slippers</title>
-      <desc id="slipper-description">
-        Original illustration of cranberry and cream knitted slippers tied together with a gold ribbon.
-      </desc>
+      <title id="slipper-title">{t("title")}</title>
+      <desc id="slipper-description">{t("description")}</desc>
       <defs>
         <pattern id="knit" width="18" height="18" patternUnits="userSpaceOnUse">
           <path d="M2 0c8 5 8 13 0 18M16 0c-8 5-8 13 0 18" stroke="#fffdf8" strokeOpacity=".18" strokeWidth="2" />
