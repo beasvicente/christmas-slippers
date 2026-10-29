@@ -1,4 +1,5 @@
 import { SUPPORTED_EU_SIZES } from "@/domain/slipper";
+import {useTranslations} from "next-intl";
 
 interface SizeSelectorProps {
   value: number | null;
@@ -7,6 +8,7 @@ interface SizeSelectorProps {
 }
 
 export function SizeSelector({ value, onChange, error }: SizeSelectorProps) {
+  const t = useTranslations("Personal");
   return (
     <fieldset
       data-validation-target
@@ -15,10 +17,10 @@ export function SizeSelector({ value, onChange, error }: SizeSelectorProps) {
       aria-describedby={error ? "eu-size-error" : "eu-size-hint"}
     >
       <legend className="font-display text-xl font-semibold text-forest">
-        EU shoe size
+        {t("size")}
       </legend>
       <p id="eu-size-hint" className="mt-1 text-sm leading-6 text-foreground/60">
-        Choose the size that usually feels most comfortable.
+        {t("sizeHint")}
       </p>
 
       <div className="mt-4 grid grid-cols-5 gap-2 sm:grid-cols-9">

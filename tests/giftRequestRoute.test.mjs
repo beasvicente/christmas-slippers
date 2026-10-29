@@ -12,6 +12,9 @@ function postRequest(body, options = {}) {
       ...(options.contentLength
         ? { "Content-Length": String(options.contentLength) }
         : {}),
+      ...(options.acceptLanguage
+        ? {"Accept-Language": options.acceptLanguage}
+        : {}),
     },
     body,
   });
@@ -53,6 +56,19 @@ test("rejects malformed and incomplete gift requests", async () => {
 
   assert.equal(malformed.status, 400);
   assert.equal(incomplete.status, 400);
+});
+
+test("localises safe API and validation errors from Accept-Language", async () => {
+  const response = await POST(postRequest(JSON.stringify({requester: {}}), {
+    address: "192.0.2.16",
+    acceptLanguage: "pt-PT,pt;q=0.9",
+  }));
+  const result = await response.json();
+
+  assert.equal(response.status, 400);
+  assert.equal(result.code, "validation");
+  assert.match(result.error, /Revê os campos/);
+  assert.match(result.fields["requester.name"], /teu nome/);
 });
 
 test("quietly accepts a populated honeypot without sending email", async () => {

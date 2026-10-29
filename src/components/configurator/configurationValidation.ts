@@ -4,7 +4,8 @@ import {
   type SlipperConfiguration,
 } from "@/domain/slipper";
 
-import { getSlipperZoneLabel } from "./configuratorSections";
+import {getMessages} from "@/i18n/dictionaries";
+import type {AppLocale} from "@/i18n/routing";
 
 export interface ConfigurationErrors {
   recipientName?: string;
@@ -19,6 +20,7 @@ export interface ConfigurationValidationState {
 
 export function validateConfiguration(
   configuration: SlipperConfiguration,
+  locale: AppLocale = "en",
 ): ConfigurationValidationState {
   const result = slipperConfigurationSchema.safeParse(configuration);
   const errors: ConfigurationErrors = { colors: {} };
@@ -31,16 +33,17 @@ export function validateConfiguration(
     const [group, field] = issue.path;
 
     if (group === "recipientName" && !errors.recipientName) {
-      errors.recipientName = issue.message;
+      errors.recipientName = getMessages(locale).Validation.recipientName;
     } else if (group === "euSize" && !errors.euSize) {
-      errors.euSize = issue.message;
+      errors.euSize = getMessages(locale).Validation.euSize;
     } else if (
       group === "colors" &&
       typeof field === "string" &&
       !errors.colors[field as SlipperColorSection]
     ) {
       const section = field as SlipperColorSection;
-      errors.colors[section] = `Choose a DROPS Snow colour for ${getSlipperZoneLabel(section)}`;
+      const label = getMessages(locale).Zones[section].label;
+      errors.colors[section] = getMessages(locale).Validation.colour.replace("{zone}", label);
     }
   }
 

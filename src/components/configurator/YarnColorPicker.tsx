@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {useTranslations} from "next-intl";
 
 import {
   DROPS_SNOW_CATALOGUE_METADATA,
@@ -30,6 +31,7 @@ export function YarnColorPicker({
   onChange,
   error,
 }: YarnColorPickerProps) {
+  const t = useTranslations("YarnPicker");
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const panelId = useId();
@@ -131,9 +133,9 @@ export function YarnColorPicker({
             type="button"
             onClick={() => onChange(null)}
             className="min-h-11 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-cranberry uppercase underline decoration-gold/60 underline-offset-4 hover:text-forest"
-            aria-label={`Clear ${label} colour`}
+            aria-label={t("clearLabel", {zone: label})}
           >
-            Clear
+            {t("clear")}
           </button>
         ) : null}
       </div>
@@ -157,7 +159,7 @@ export function YarnColorPicker({
           }}
         >
           <label htmlFor={`${panelId}-search`} className="text-xs font-bold tracking-[0.12em] text-cranberry uppercase">
-            Search the yarn shelf
+            {t("search")}
           </label>
           <div className="relative mt-2">
             <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-foreground/45" aria-hidden="true">
@@ -168,18 +170,18 @@ export function YarnColorPicker({
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Try ‘56’ or ‘christmas red’"
+              placeholder={t("placeholder")}
               aria-controls={listId}
               className="w-full rounded-xl border border-gold/35 bg-snow py-3 pr-4 pl-10 text-sm placeholder:text-foreground/35 focus:border-cranberry focus:outline-none focus:ring-3 focus:ring-gold/30"
             />
           </div>
 
           <p className="mt-3 text-xs text-foreground/55" aria-live="polite">
-            {filteredColors.length} {filteredColors.length === 1 ? "colour" : "colours"} found
+            {t("found", {count: filteredColors.length})}
           </p>
 
           {filteredColors.length > 0 ? (
-            <ul id={listId} className="mt-3 grid max-h-80 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3" aria-label={`${label} yarn colours`}>
+            <ul id={listId} className="mt-3 grid max-h-80 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3" aria-label={t("listLabel", {zone: label})}>
               {filteredColors.map((color, index) => {
                 const isSelected = color.id === selectedId;
 
@@ -203,7 +205,7 @@ export function YarnColorPicker({
                       <YarnSwatch color={color} className="size-9 shrink-0" />
                       <span className="min-w-0">
                         <span className={`block text-[10px] font-bold tracking-[0.12em] uppercase ${isSelected ? "text-gold" : "text-cranberry"}`}>
-                          No. {color.id} · {color.yarnType}
+                          {t("number", {id: color.id, type: color.yarnType})}
                         </span>
                         <span className="mt-1 block text-xs leading-4 font-semibold capitalize">
                           {color.name}
@@ -219,15 +221,15 @@ export function YarnColorPicker({
             </ul>
           ) : (
             <div className="mt-3 rounded-xl border border-dashed border-gold/40 bg-snow px-5 py-8 text-center">
-              <p className="font-display text-lg text-forest">No yarns found on this shelf.</p>
+              <p className="font-display text-lg text-forest">{t("empty")}</p>
               <button type="button" onClick={() => setQuery("")} className="mt-2 min-h-11 px-3 text-sm font-semibold text-cranberry underline decoration-gold underline-offset-4">
-                Clear the search
+                {t("clearSearch")}
               </button>
             </div>
           )}
 
           <p className="mt-4 text-[11px] leading-5 text-foreground/55">
-            All listed colours can be requested. Retailer stock was last checked on {DROPS_SNOW_CATALOGUE_METADATA.verifiedOn}; availability will be confirmed later.
+            {t("availability", {date: DROPS_SNOW_CATALOGUE_METADATA.verifiedOn})}
           </p>
         </div>
       ) : null}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
+import {useTranslations} from "next-intl";
 import {
   Component,
   useEffect,
@@ -73,6 +74,7 @@ function supportsWebGL() {
 }
 
 export function SlipperViewer({ colors }: SlipperViewerProps) {
+  const t = useTranslations("Viewer");
   const [webGLAvailable] = useState(supportsWebGL);
   const [modelStatus, setModelStatus] = useState<
     "checking" | "available" | "missing"
@@ -113,40 +115,40 @@ export function SlipperViewer({ colors }: SlipperViewerProps) {
 
   const unavailableFallback = (
     <ViewerFallback
-      title="The fitting-room window is resting."
-      message="This browser cannot open the interactive 3D view. Every personalisation control and the colour summary remain available below."
+      title={t("unavailableTitle")}
+      message={t("unavailableMessage")}
     />
   );
   const pendingModelFallback = (
     <ViewerFallback
       title={
         modelStatus === "checking"
-          ? "Looking for the slippers…"
-          : "The realistic model is being fitted."
+          ? t("checkingTitle")
+          : t("missingTitle")
       }
-      message="The workshop is ready for the final Sailor Slippers GLB. Your four colour choices remain saved and will drive the model as soon as the asset is added."
+      message={t("missingMessage")}
     />
   );
   const modelAvailable = modelStatus === "available";
 
   return (
     <section
-      className="overflow-hidden rounded-[1.75rem] border border-gold/35 bg-snow shadow-[0_20px_55px_rgba(81,59,50,0.12)]"
+      className="min-w-0 overflow-hidden rounded-[1.75rem] border border-gold/35 bg-snow shadow-[0_20px_55px_rgba(81,59,50,0.12)]"
       aria-labelledby="slipper-viewer-title"
       aria-describedby="slipper-viewer-instructions slipper-viewer-note"
     >
-      <div className="flex items-start justify-between gap-4 border-b border-gold/25 bg-snow px-5 py-4">
-        <div>
-          <p className="text-[9px] font-bold tracking-[0.22em] text-gold uppercase">Your colour study</p>
-          <h2 id="slipper-viewer-title" className="mt-1 font-display text-2xl font-semibold text-cranberry">Slipper preview</h2>
+      <div className="flex items-start justify-between gap-3 border-b border-gold/25 bg-snow px-4 py-4 sm:px-5">
+        <div className="min-w-0">
+          <p className="text-[9px] font-bold tracking-[0.22em] text-gold uppercase">{t("eyebrow")}</p>
+          <h2 id="slipper-viewer-title" className="mt-1 font-display text-2xl font-semibold text-cranberry">{t("title")}</h2>
         </div>
         <button
           type="button"
           onClick={() => setResetSignal((current) => current + 1)}
           disabled={!webGLAvailable || !modelAvailable}
-          className="min-h-11 rounded-full border border-forest/25 px-3 py-2 text-[10px] font-bold tracking-[0.08em] text-forest uppercase transition-colors hover:border-cranberry hover:text-cranberry disabled:cursor-not-allowed disabled:opacity-45"
+          className="min-h-11 shrink-0 rounded-full border border-forest/25 px-3 py-2 text-[10px] font-bold tracking-[0.08em] text-forest uppercase transition-colors hover:border-cranberry hover:text-cranberry disabled:cursor-not-allowed disabled:opacity-45"
         >
-          Reset view
+          {t("reset")}
         </button>
       </div>
 
@@ -180,13 +182,13 @@ export function SlipperViewer({ colors }: SlipperViewerProps) {
       <div className="border-t border-gold/20 bg-cream/60 px-5 py-4">
         <p id="slipper-viewer-instructions" className="text-xs font-semibold text-forest">
           {modelAvailable
-            ? "Drag to turn · pinch or scroll to zoom"
-            : "Interactive controls will activate with the final model"}
+            ? t("instructions")
+            : t("pendingInstructions")}
         </p>
         <p id="slipper-viewer-note" className="mt-1 text-[11px] leading-5 text-foreground/55">
           {modelAvailable
-            ? "The GLB uses the primary preview colour for mix and print yarns."
-            : "The interactive preview will return when the final GLB model is added."}
+            ? t("note")
+            : t("pendingNote")}
         </p>
       </div>
     </section>
