@@ -1,6 +1,6 @@
-import { OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 import { SlipperModel } from "./SlipperModel";
@@ -11,6 +11,9 @@ interface SlipperSceneProps {
   resetSignal: number;
   reducedMotion: boolean;
 }
+
+const CAMERA_POSITION = [4.4, 4.2, 5.7] as const;
+const CAMERA_TARGET = [0, 0.1, 0] as const;
 
 function CameraControls({
   resetSignal,
@@ -24,8 +27,8 @@ function CameraControls({
       return;
     }
 
-    camera.position.set(4.8, 3.6, 6.4);
-    controlsRef.current.target.set(0, 0.52, 0);
+    camera.position.set(...CAMERA_POSITION);
+    controlsRef.current.target.set(...CAMERA_TARGET);
     controlsRef.current.update();
     invalidate();
   }, [camera, invalidate, resetSignal]);
@@ -33,7 +36,7 @@ function CameraControls({
   return (
     <OrbitControls
       ref={controlsRef}
-      target={[0, 0.52, 0]}
+      target={CAMERA_TARGET}
       enablePan={false}
       enableDamping={!reducedMotion}
       dampingFactor={0.08}
@@ -48,6 +51,16 @@ function CameraControls({
   );
 }
 
+function ModelLoading() {
+  return (
+    <Html center>
+      <p className="whitespace-nowrap rounded-full bg-snow/90 px-4 py-2 text-xs font-semibold text-forest shadow-sm">
+        Unwrapping the slippers…
+      </p>
+    </Html>
+  );
+}
+
 export function SlipperScene({
   materials,
   resetSignal,
@@ -56,23 +69,22 @@ export function SlipperScene({
   return (
     <>
       <color attach="background" args={["#FFF9EE"]} />
-      <ambientLight intensity={1.35} />
-      <hemisphereLight args={["#FFF8E7", "#7A6757", 1.4]} />
+      <ambientLight intensity={0.8} />
+      <hemisphereLight args={["#FFF8E7", "#756458", 1.15]} />
       <directionalLight
         castShadow
         position={[4, 6, 4]}
-        intensity={2.6}
+        intensity={2.15}
         color="#FFF3D4"
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0002}
         shadow-normalBias={0.035}
       />
-      <directionalLight position={[-4, 2, -3]} intensity={0.8} color="#D9E6DF" />
+      <directionalLight position={[-4, 2.5, -3]} intensity={0.65} color="#D9E6DF" />
 
-      <group position={[0, -0.58, 0]} rotation={[0, -0.08, 0]}>
-        <SlipperModel materials={materials} position={[-0.82, 0, 0.12]} rotationY={-0.1} />
-        <SlipperModel materials={materials} position={[0.82, 0, -0.12]} rotationY={0.1} />
-      </group>
+      <Suspense fallback={<ModelLoading />}>
+        <SlipperModel materials={materials} />
+      </Suspense>
 
       <mesh position={[0, -0.48, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <circleGeometry args={[3.2, 48]} />
