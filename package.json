@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs"
+    "test": "node --test --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs",
+    "invite:create": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs scripts/invitations.ts create",
+    "invite:create-generic": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs scripts/invitations.ts create-generic",
+    "invite:list": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs scripts/invitations.ts list",
+    "invite:revoke": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/typescript-loader.mjs scripts/invitations.ts revoke"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
