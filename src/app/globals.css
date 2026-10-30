@@ -83,6 +83,148 @@ h4 {
   animation: gentle-float 5s ease-in-out infinite;
 }
 
+.invitation-scene-in {
+  animation: invitation-scene-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.invitation-letter {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgb(81 59 50 / 4%) 0 0.7px, transparent 0.9px),
+    radial-gradient(circle at 75% 65%, rgb(197 154 80 / 5%) 0 0.8px, transparent 1px);
+  background-size: 13px 13px, 17px 17px;
+}
+
+.invitation-falling-star {
+  animation-name: invitation-star-fall, invitation-star-twinkle;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+  will-change: transform, opacity;
+}
+
+.invitation-burst-star {
+  top: 54%;
+  left: 50%;
+  animation: invitation-magic-burst 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  font-size: clamp(0.65rem, 1.5vw, 1rem);
+  opacity: 0;
+}
+
+.invitation-art-sparkle {
+  animation: invitation-art-sparkle 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  font-size: clamp(0.55rem, 1.5vw, 0.9rem);
+  opacity: 0;
+}
+
+.invitation-gift-artwork img {
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.invitation-gift-open-response {
+  animation: invitation-gift-open-response 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.invitation-magic-burst-gift .invitation-burst-star {
+  top: 48%;
+}
+
+.invitation-final-art-in {
+  animation: invitation-final-art-in 640ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.invitation-final-copy-in {
+  animation: invitation-final-copy-in 540ms 70ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes invitation-scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes invitation-star-fall {
+  from {
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(1.2rem, 116vh, 0) rotate(150deg);
+  }
+}
+
+@keyframes invitation-star-twinkle {
+  0%, 100% {
+    filter: brightness(0.9);
+  }
+  50% {
+    filter: brightness(1.25);
+    opacity: 0.68;
+  }
+}
+
+@keyframes invitation-magic-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35) rotate(0deg);
+  }
+  38% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--burst-x)), calc(-50% + var(--burst-y))) scale(1) rotate(40deg);
+  }
+}
+
+@keyframes invitation-art-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.25) rotate(0deg);
+  }
+  42% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) rotate(35deg);
+  }
+}
+
+@keyframes invitation-gift-open-response {
+  from {
+    transform: scale(0.975);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes invitation-final-art-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes invitation-final-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes snowfall {
   0% {
     opacity: 0;
@@ -122,5 +264,18 @@ h4 {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .invitation-atmosphere,
+  .invitation-magic-burst,
+  .invitation-seal-sparkles {
+    display: none;
+  }
+
+  .invitation-final-art-in,
+  .invitation-final-copy-in {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
