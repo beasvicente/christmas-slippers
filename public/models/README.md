@@ -1,6 +1,9 @@
 # Sailor Slippers GLB contract
 
-Place the final asset at `public/models/sailor-slippers.glb`.
+The production asset is committed at `public/models/sailor-slippers.glb`. Its
+editable source lives at `assets/blender/sailor-slippers.blend`, and
+`assets/blender/scripts/export_slippers_glb.py` validates and exports the web
+asset.
 
 The GLB should contain the complete left-and-right pair:
 
