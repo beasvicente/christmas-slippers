@@ -183,15 +183,16 @@ src/
 │   ├── landing/             # Storybook homepage sections
 │   └── three/               # GLB loading, mapping, scene, controls, fallback
 ├── domain/slipper/          # Catalogue, types, defaults, and Zod schema
-├── i18n/                    # next-intl routing and request configuration
-├── lib/                     # Server workflows, invitations, and rate limits
-└── messages/                # Portuguese and English dictionaries
+├── i18n/                    # Internationalisation
+│   └── messages/            # Portuguese and English dictionaries
+├── server/                  # Server workflows, invitations, and rate limits
+└── state/                   # Shared workshop configuration state
 
 assets/blender/              # Editable .blend source and reproducible scripts
-public/images/               # Approved storybook and invitation artwork
+public/images/               # Storybook and invitation artwork
 public/models/               # Runtime GLB and material contract
-scripts/invitations.ts       # Private invitation administrator CLI
-tests/                       # Node test suite
+scripts/invitations.ts       # Private invitation administration CLI
+tests/                       # Automated test suite
 ```
 
 ## Known Limitations and Roadmap
