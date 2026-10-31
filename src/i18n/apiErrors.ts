@@ -1,7 +1,18 @@
 import {getMessages} from "./dictionaries";
 import type {AppLocale} from "./routing";
 
-export type ApiErrorCode = "mediaType" | "rateLimited" | "validation" | "tooLarge" | "unreadable" | "unavailable" | "delivery" | "accepted";
+export type ApiErrorCode =
+  | "mediaType"
+  | "rateLimited"
+  | "dailyQuota"
+  | "botChallenge"
+  | "deliveryDisabled"
+  | "validation"
+  | "tooLarge"
+  | "unreadable"
+  | "unavailable"
+  | "delivery"
+  | "accepted";
 
 export function localeFromRequest(request: Request): AppLocale {
   return request.headers.get("accept-language")?.toLowerCase().startsWith("pt") ? "pt-PT" : "en";

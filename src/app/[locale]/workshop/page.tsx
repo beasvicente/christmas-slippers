@@ -86,7 +86,9 @@ export default async function WorkshopPage({params}: PageProps<"/[locale]/worksh
 
         <section className="relative px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20" aria-label={t("formLabel")}>
           <div className="mx-auto max-w-7xl">
-            <SlipperConfigurator />
+            <SlipperConfigurator
+              deliveryEnabled={process.env.GIFT_REQUEST_DELIVERY_ENABLED === "true"}
+            />
           </div>
         </section>
       </main>

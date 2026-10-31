@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
-import { useEffect, useRef, type FormEvent } from "react";
+import {useCallback, useEffect, useRef, useState, type FormEvent} from "react";
 
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,10 +13,15 @@ import {
 import { SLIPPER_YARN_ZONES } from "./configuratorSections";
 import {updateGift, useWorkshopDraft} from "@/state/workshopDraft";
 import type {ApiErrorCode} from "@/i18n/apiErrors";
+import {
+  TurnstileWidget,
+  type TurnstileWidgetHandle,
+} from "./TurnstileWidget";
 
 interface GiftRequestFormProps {
   configuration: SlipperConfiguration;
   available: boolean;
+  deliveryEnabled: boolean;
 }
 
 interface ApiResponse {
@@ -31,6 +36,7 @@ const INPUT_STYLES =
 export function GiftRequestForm({
   configuration,
   available,
+  deliveryEnabled,
 }: GiftRequestFormProps) {
   const {gift} = useWorkshopDraft();
   const {expanded, status, requesterName, requesterEmail, whatsappPhone, christmasMessage, contactConsent, website, errorMessage, errorCode, fieldErrors} = gift;
@@ -41,6 +47,12 @@ export function GiftRequestForm({
   const apiErrors = useTranslations("ApiErrors");
   const statusRef = useRef<HTMLDivElement>(null);
   const firstFieldRef = useRef<HTMLInputElement>(null);
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
+  const handleTurnstileToken = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
 
   useEffect(() => {
     if (status === "accepted" || status === "error") {
@@ -56,6 +68,10 @@ export function GiftRequestForm({
   async function submitGiftRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "sending" || !available) return;
+    if (!turnstileToken) {
+      updateGift({status: "error", errorMessage: "", errorCode: "botChallenge", fieldErrors: {}});
+      return;
+    }
 
     updateGift({status: "sending", errorMessage: "", errorCode: undefined, fieldErrors: {}});
 
@@ -73,22 +89,39 @@ export function GiftRequestForm({
           christmasMessage,
           contactConsent,
           website,
+          turnstileToken,
         }),
       });
       const result = (await response.json()) as ApiResponse;
 
       if (!response.ok) {
+        turnstileRef.current?.reset();
         updateGift({fieldErrors: result.fields ?? {}, errorMessage: result.error ?? "", errorCode: result.code, status: "error"});
         return;
       }
 
       updateGift({status: "accepted"});
     } catch {
+      turnstileRef.current?.reset();
       updateGift({errorMessage: "", errorCode: "network", status: "error"});
     }
   }
 
   if (!available && !expanded) return null;
+
+  if (!deliveryEnabled) {
+    return (
+      <section className="storybook-frame rounded-[2rem] bg-snow p-6 text-center sm:p-9" aria-labelledby="delivery-disabled-title">
+        <span className="mx-auto grid size-14 place-items-center rounded-full border border-gold/40 bg-cream text-2xl text-cranberry" aria-hidden="true">✉</span>
+        <h2 id="delivery-disabled-title" className="mt-5 font-display text-3xl font-semibold text-cranberry sm:text-4xl">
+          {t("deliveryDisabledTitle")}
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-foreground/65">
+          {t("deliveryDisabledCopy")}
+        </p>
+      </section>
+    );
+  }
 
   if (!expanded) {
     return (
@@ -273,13 +306,27 @@ export function GiftRequestForm({
 
         <p className="text-xs leading-5 text-foreground/55">{t("privacy")}</p>
 
+        <div className="rounded-xl border border-gold/30 bg-cream/40 p-4">
+          {siteKey ? (
+            <TurnstileWidget
+              ref={turnstileRef}
+              siteKey={siteKey}
+              locale={locale}
+              onTokenChange={handleTurnstileToken}
+            />
+          ) : (
+            <p className="text-sm font-semibold text-cranberry">{t("challengeUnavailable")}</p>
+          )}
+          <p className="mt-2 text-xs leading-5 text-foreground/55">{t("challengeHelp")}</p>
+        </div>
+
         <div ref={statusRef} tabIndex={-1} className="outline-none" aria-live="polite">
           {status === "error" ? (
             <p className="rounded-xl border border-cranberry/25 bg-cranberry/5 px-4 py-3 text-sm font-semibold text-cranberry">{errorCode === "network" ? t("networkError") : errorCode ? apiErrors(errorCode) : errorMessage || t("genericError")}</p>
           ) : null}
         </div>
 
-        <Button type="submit" disabled={status === "sending" || !available} className="w-full sm:w-auto">
+        <Button type="submit" disabled={status === "sending" || !available || !siteKey || !turnstileToken} className="w-full sm:w-auto">
           {status === "sending" ? t("sending") : status === "error" ? t("retry") : t("submit")}
           <span aria-hidden="true">{status === "sending" ? "·" : "✉"}</span>
         </Button>

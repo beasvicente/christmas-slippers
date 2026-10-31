@@ -25,7 +25,7 @@ export class RateLimitUnavailableError extends Error {
   }
 }
 
-function requestAddress(request: Request) {
+export function requestAddress(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return forwarded || request.headers.get("x-real-ip")?.trim() || "unknown";
 }
