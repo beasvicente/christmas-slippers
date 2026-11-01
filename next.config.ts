@@ -21,14 +21,6 @@ const nextConfig: NextConfig = {
       {source: "/en/invite/:token", headers: privacyHeaders},
     ];
   },
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
 };
 
 export default withNextIntl(nextConfig);
