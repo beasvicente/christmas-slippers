@@ -1,3 +1,4 @@
+import {Suspense} from "react";
 import {connection} from "next/server";
 import type {Metadata} from "next";
 import {getTranslations, setRequestLocale} from "next-intl/server";
@@ -14,6 +15,21 @@ export async function generateMetadata({params}: PageProps<"/[locale]/workshop">
   const t = await getTranslations({locale, namespace: "Metadata"});
   return {title: t("workshopTitle"), description: t("workshopDescription")};
 }
+
+
+async function WorkshopConfigurator() {
+  // Read the delivery flag only when the page is requested.
+  await connection();
+
+  const deliveryEnabled =
+    process.env.GIFT_REQUEST_DELIVERY_ENABLED === "true";
+
+  return (
+    <SlipperConfigurator deliveryEnabled={deliveryEnabled} />
+  );
+}
+
+
 
 function WorkshopOrnament({ className = "" }: { className?: string }) {
   return (
@@ -43,11 +59,7 @@ export default async function WorkshopPage({params}: PageProps<"/[locale]/worksh
   if (!isAppLocale(locale)) notFound();
   setRequestLocale(locale);
 
-  // Read the delivery flag at request time, not during prerendering.
-  await connection();
 
-  const deliveryEnabled =
-    process.env.GIFT_REQUEST_DELIVERY_ENABLED === "true";
   const t = await getTranslations("Workshop");
   const header = await getTranslations("Header");
   const brand = await getTranslations("Brand");
@@ -91,11 +103,24 @@ export default async function WorkshopPage({params}: PageProps<"/[locale]/worksh
           </div>
         </section>
 
-        <section className="relative px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20" aria-label={t("formLabel")}>
+        
+        <section
+          className="relative px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
+          aria-label={t("formLabel")}
+        >
           <div className="mx-auto max-w-7xl">
-            <SlipperConfigurator deliveryEnabled={deliveryEnabled} />
+            <Suspense
+              fallback={
+                <p className="py-12 text-center text-forest">
+                  Preparing your Christmas workshop…
+                </p>
+              }
+            >
+              <WorkshopConfigurator />
+            </Suspense>
           </div>
         </section>
+
       </main>
 
       <footer className="border-t border-gold/25 bg-cranberry px-5 py-8 text-snow sm:px-8 lg:px-12">
