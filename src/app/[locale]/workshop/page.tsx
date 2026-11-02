@@ -1,3 +1,4 @@
+import {connection} from "next/server";
 import type {Metadata} from "next";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
@@ -41,6 +42,12 @@ export default async function WorkshopPage({params}: PageProps<"/[locale]/worksh
   const {locale} = await params;
   if (!isAppLocale(locale)) notFound();
   setRequestLocale(locale);
+
+  // Read the delivery flag at request time, not during prerendering.
+  await connection();
+
+  const deliveryEnabled =
+    process.env.GIFT_REQUEST_DELIVERY_ENABLED === "true";
   const t = await getTranslations("Workshop");
   const header = await getTranslations("Header");
   const brand = await getTranslations("Brand");
@@ -86,9 +93,7 @@ export default async function WorkshopPage({params}: PageProps<"/[locale]/worksh
 
         <section className="relative px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20" aria-label={t("formLabel")}>
           <div className="mx-auto max-w-7xl">
-            <SlipperConfigurator
-              deliveryEnabled={process.env.GIFT_REQUEST_DELIVERY_ENABLED === "true"}
-            />
+            <SlipperConfigurator deliveryEnabled={deliveryEnabled} />
           </div>
         </section>
       </main>
