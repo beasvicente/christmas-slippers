@@ -1,5 +1,5 @@
 
-import {giftRequestSubmissionSchema} from "../../domain/gift-request";
+import {giftRequestSubmissionSchema} from "../../domain/gift-request/index";
 import {apiMessage, localeFromRequest, validationMessage} from "../../i18n/apiErrors";
 import type {AppLocale} from "../../i18n/routing";
 
