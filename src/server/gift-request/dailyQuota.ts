@@ -17,7 +17,7 @@ if current >= limit then
 end
 local next = redis.call("INCR", KEYS[1])
 if next == 1 then
-  rediså.call("EXPIREAT", KEYS[1], ARGV[2])
+  redis.call("EXPIREAT", KEYS[1], ARGV[2])
 end
 return {1, next, redis.call("TTL", KEYS[1])}
 `;
