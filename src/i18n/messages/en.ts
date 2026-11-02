@@ -175,6 +175,8 @@ const messages = {
     submit: "Post my Christmas wish",
     networkError: "The Christmas postbox could not be reached. Your details are still here—please try again.",
     genericError: "Your wish could not be sent just now. Please try again.",
+    deliveryDisabledTitle: "Gift requests are temporarily unavailable",
+  deliveryDisabledCopy: "You can still design and review your Christmas slippers. Sending requests will be available soon.",
   },
   Validation: {
     recipientName: "Enter the slipper recipient's name",
