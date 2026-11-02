@@ -11,36 +11,100 @@ const environment = {
   UPSTASH_REDIS_REST_TOKEN: "private-test-credential",
 };
 
+
 function createRedisMock() {
   const values = new Map();
   const sets = new Map();
+  const expirations = new Map();
   const requestBodies = [];
 
   return {
     requestBodies,
+    values,
+    sets,
+    expirations,
+
     fetcher: async (_url, init) => {
       const commands = JSON.parse(String(init.body));
+
       requestBodies.push(String(init.body));
+
       const results = commands.map(([command, ...args]) => {
         if (command === "SET") {
-          values.set(args[0], args[1]);
+          const [key, value, option, expiration] = args;
+
+          values.set(key, value);
+
+          if (option === "EXAT") {
+            const expiresAt = Number(expiration);
+
+            if (!Number.isInteger(expiresAt) || expiresAt <= 0) {
+              return {error: "Invalid expiration"};
+            }
+
+            expirations.set(key, expiresAt);
+          }
+
           return {result: "OK"};
         }
+
         if (command === "SADD") {
-          const set = sets.get(args[0]) ?? new Set();
-          set.add(args[1]);
-          sets.set(args[0], set);
-          return {result: 1};
+          const [key, member] = args;
+          const set = sets.get(key) ?? new Set();
+
+          const existed = set.has(member);
+          set.add(member);
+          sets.set(key, set);
+
+          return {result: existed ? 0 : 1};
         }
-        if (command === "GET") return {result: values.get(args[0]) ?? null};
-        if (command === "SMEMBERS") return {result: [...(sets.get(args[0]) ?? [])]};
-        if (command === "MGET") return {result: args.map((key) => values.get(key) ?? null)};
-        return {error: "Unsupported test command"};
+
+        if (command === "GET") {
+          return {result: values.get(args[0]) ?? null};
+        }
+
+        if (command === "SMEMBERS") {
+          return {
+            result: [...(sets.get(args[0]) ?? [])],
+          };
+        }
+
+        if (command === "MGET") {
+          return {
+            result: args.map((key) => values.get(key) ?? null),
+          };
+        }
+
+        if (command === "DEL") {
+          const key = args[0];
+          const existed = values.delete(key);
+
+          expirations.delete(key);
+
+          return {result: existed ? 1 : 0};
+        }
+
+        if (command === "SREM") {
+          const [key, member] = args;
+          const set = sets.get(key);
+
+          if (!set) {
+            return {result: 0};
+          }
+
+          const removed = set.delete(member);
+
+          return {result: removed ? 1 : 0};
+        }
+
+        return {error: `Unsupported test command: ${command}`};
       });
+
       return Response.json(results);
     },
   };
 }
+
 
 function fixedToken(byte) {
   return Buffer.alloc(INVITATION_TOKEN_BYTES, byte).toString("base64url");
@@ -125,6 +189,32 @@ test("rejects missing, malformed, unknown, expired, and revoked invitation token
   );
   assert.equal(await revokeInvitation(revokedToken, {environment, fetcher: redis.fetcher}), true);
   assert.equal(await resolveInvitation(revokedToken, {environment, fetcher: redis.fetcher}), null);
+
+  const revokedHash = hashInvitationToken(revokedToken);
+
+  const revokedRecordKey =
+    `christmas-slippers:invitation:v1:record:${revokedHash}`;
+
+  // The invitation record must be physically deleted.
+  assert.equal(redis.values.has(revokedRecordKey), false);
+
+  // Its token hash must also be removed from the index.
+  const invitationIndex =
+    redis.sets.get("christmas-slippers:invitation:v1:index");
+
+  assert.equal(
+    invitationIndex?.has(revokedHash) ?? false,
+    false,
+  );
+
+  // Confirm that Redis deletion commands were issued.
+  const executedCommands = redis.requestBodies
+    .flatMap((body) => JSON.parse(body))
+    .map(([command]) => command);
+
+  assert.ok(executedCommands.includes("DEL"));
+  assert.ok(executedCommands.includes("SREM"));
+
 });
 
 test("keeps simultaneous invitation lookups isolated", async () => {
@@ -150,3 +240,99 @@ test("fails closed without exposing storage errors to invitation visitors", asyn
     fetcher: async () => new Response(null, {status: 503}),
   }), null);
 });
+
+
+test("new invitations expire after 30 days by default", async () => {
+  const redis = createRedisMock();
+  const token = fixedToken(20);
+  const createdAt = new Date("2026-11-01T12:00:00Z");
+
+  const created = await createInvitation(
+    {recipientFirstName: "Christmas Guest"},
+    {
+      environment,
+      fetcher: redis.fetcher,
+      generateToken: () => token,
+      now: createdAt,
+    },
+  );
+
+  const expectedExpiration = new Date(
+    createdAt.getTime() + 30 * 24 * 60 * 60 * 1000,
+  );
+
+  assert.equal(
+    created.record.expiresAt,
+    expectedExpiration.toISOString(),
+  );
+
+  const hash = hashInvitationToken(token);
+  const key = `christmas-slippers:invitation:v1:record:${hash}`;
+
+  assert.equal(
+    redis.expirations.get(key),
+    Math.ceil(expectedExpiration.getTime() / 1000),
+  );
+
+  const beforeExpiry = await resolveInvitation(token, {
+    environment,
+    fetcher: redis.fetcher,
+    now: new Date(expectedExpiration.getTime() - 1000),
+  });
+
+  assert.deepEqual(beforeExpiry, {
+    recipientFirstName: "Christmas Guest",
+  });
+
+  const afterExpiry = await resolveInvitation(token, {
+    environment,
+    fetcher: redis.fetcher,
+    now: expectedExpiration,
+  });
+
+  assert.equal(afterExpiry, null);
+});
+
+
+test("cleans stale invitation index entries after Redis record expiry", async () => {
+  const redis = createRedisMock();
+  const token = fixedToken(21);
+  const now = new Date();
+
+  await createInvitation(
+    {
+      recipientFirstName: "Temporary Guest",
+      expiresAt: new Date(now.getTime() + 60_000),
+    },
+    {
+      environment,
+      fetcher: redis.fetcher,
+      generateToken: () => token,
+      now,
+    },
+  );
+
+  const hash = hashInvitationToken(token);
+  const recordKey =
+    `christmas-slippers:invitation:v1:record:${hash}`;
+  const indexKey =
+    "christmas-slippers:invitation:v1:index";
+
+  assert.equal(redis.values.has(recordKey), true);
+  assert.equal(redis.sets.get(indexKey)?.has(hash), true);
+
+  // Simulate Redis automatically removing the expired record.
+  redis.values.delete(recordKey);
+  redis.expirations.delete(recordKey);
+
+  const listed = await listInvitationRecords({
+    environment,
+    fetcher: redis.fetcher,
+  });
+
+  assert.equal(listed.length, 0);
+
+  // Listing must also remove the orphaned index entry.
+  assert.equal(redis.sets.get(indexKey)?.has(hash), false);
+});
+

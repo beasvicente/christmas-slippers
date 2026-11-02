@@ -48,6 +48,7 @@ async function create() {
     expiresAt: parseExpiration(option("expires")),
   });
   console.log(`Invitation created for ${record.recipientFirstName}.`);
+  console.log(`Expires: ${record.expiresAt}`);
   console.log(`PT: ${invitationUrl(base, token, "pt-PT")}`);
   console.log(`EN: ${invitationUrl(base, token, "en")}`);
   console.log("Keep these bearer links private. Anyone who has one can view the personalised invitation.");
@@ -55,11 +56,12 @@ async function create() {
 
 async function createGeneric() {
   const base = publicBaseUrl();
-  const {token} = await createInvitation({
+  const {token, record} = await createInvitation({
     recipientFirstName: null,
     expiresAt: parseExpiration(option("expires")),
   });
   console.log("Generic invitation created.");
+  console.log(`Expires: ${record.expiresAt}`);
   console.log(`PT: ${invitationUrl(base, token, "pt-PT")}`);
   console.log(`EN: ${invitationUrl(base, token, "en")}`);
   console.log("Keep these bearer links private. Anyone who has one can view the invitation.");
@@ -83,7 +85,7 @@ async function list() {
 async function revoke() {
   const revoked = await revokeInvitation(requireOption("token"));
   if (!revoked) throw new Error("Invitation not found or token is malformed");
-  console.log("Invitation revoked.");
+  console.log("Invitation permanently deleted and revoked.");
 }
 
 async function main() {

@@ -39,7 +39,7 @@ const SlipperViewer = dynamic(
   },
 );
 
-export function SlipperConfigurator() {
+export function SlipperConfigurator({deliveryEnabled}: {deliveryEnabled: boolean}) {
   const {configuration, validationRequested} = useWorkshopDraft();
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Configurator");
@@ -164,6 +164,7 @@ export function SlipperConfigurator() {
         <GiftRequestForm
           configuration={configuration}
           available={validationRequested && validation.isValid}
+          deliveryEnabled={deliveryEnabled}
         />
       </div>
 

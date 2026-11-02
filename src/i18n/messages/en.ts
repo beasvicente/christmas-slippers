@@ -175,6 +175,8 @@ const messages = {
     submit: "Post my Christmas wish",
     networkError: "The Christmas postbox could not be reached. Your details are still here—please try again.",
     genericError: "Your wish could not be sent just now. Please try again.",
+    deliveryDisabledTitle: "Gift requests are temporarily unavailable",
+  deliveryDisabledCopy: "You can still design and review your Christmas slippers. Sending requests will be available soon.",
   },
   Validation: {
     recipientName: "Enter the slipper recipient's name",
@@ -196,6 +198,9 @@ const messages = {
     unavailable: "The Christmas postbox is not configured yet. Please try again later.",
     delivery: "Your wish could not be sent just now. Your design is still here—please try again.",
     accepted: "Your Christmas wish was accepted for processing.",
+    deliveryDisabled: "Gift requests are temporarily unavailable. Please try again later.",
+    botChallenge: "We couldn't complete the security check. Please try again.",
+    dailyQuota: "The workshop has received all its requests for today. Please try again tomorrow.",
   },
   Artwork: {
     title: "A pair of handmade Christmas slippers",

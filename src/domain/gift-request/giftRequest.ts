@@ -95,6 +95,7 @@ export const giftRequestSchema = z
 
 export const giftRequestSubmissionSchema = giftRequestSchema.extend({
   website: z.string().max(200).optional().default(""),
+  turnstileToken: z.string().trim().min(1).max(2048),
 });
 
 export type GiftRequest = z.infer<typeof giftRequestSchema>;
