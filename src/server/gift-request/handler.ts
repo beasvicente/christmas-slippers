@@ -112,36 +112,7 @@ function validationErrors(
  * The token is transport-only and must not become part of
  * the persisted or emailed gift-request data.
  */
-function extractSubmissionPayload(body: unknown): {
-  payload: unknown;
-  challengeToken: string;
-} {
-  if (
-    typeof body !== "object" ||
-    body === null ||
-    Array.isArray(body)
-  ) {
-    return {
-      payload: body,
-      challengeToken: "",
-    };
-  }
 
-  const record = body as Record<string, unknown>;
-
-  const challengeToken =
-    typeof record.turnstileToken === "string"
-      ? record.turnstileToken
-      : "";
-
-  const {turnstileToken: _transportToken, ...payload} = record;
-  void _transportToken;
-
-  return {
-    payload,
-    challengeToken,
-  };
-}
 
 interface GiftRequestRouteDependencies {
   environment?: NodeJS.ProcessEnv;
@@ -228,11 +199,12 @@ export function createGiftRequestPostHandler(
       }
 
       // 5. Extract the transport-only Turnstile token.
-      const {payload, challengeToken} =
-        extractSubmissionPayload(body);
+      //const {payload, challengeToken} =
+        //extractSubmissionPayload(body);
 
       // 6. Validate the actual gift-request data.
-      const parsed = giftRequestSubmissionSchema.safeParse(payload);
+      //const parsed = giftRequestSubmissionSchema.safeParse(payload);
+      const parsed = giftRequestSubmissionSchema.safeParse(body);
 
       if (!parsed.success) {
         return Response.json(
@@ -251,10 +223,10 @@ export function createGiftRequestPostHandler(
       // 7. Verify Turnstile on the server.
       const challengeIsValid = await (
         dependencies.verifyChallenge
-          ? dependencies.verifyChallenge(request, challengeToken)
+          ? dependencies.verifyChallenge(request, parsed.data.turnstileToken)
           : verifyGiftRequestChallenge(
               request,
-              challengeToken,
+              parsed.data.turnstileToken,
               {
                 environment: {
                   TURNSTILE_SECRET_KEY:
@@ -299,6 +271,8 @@ export function createGiftRequestPostHandler(
       }
 
       // 9. Build the validated email payload.
+      
+      // Build the validated email payload.
       // The Turnstile token is intentionally excluded.
       const giftRequest = {
         configuration: parsed.data.configuration,
@@ -307,7 +281,9 @@ export function createGiftRequestPostHandler(
         contactConsent: parsed.data.contactConsent,
       };
 
+
       // 10. Attempt delivery.
+      
       try {
         await (
           dependencies.deliver ?? deliverGiftRequest
@@ -348,9 +324,13 @@ export function createGiftRequestPostHandler(
         },
         {status: 202},
       );
-    } catch (error) {
+    //} catch (error) {
       // Invalid or oversized request bodies.
-      if (error instanceof InvalidRequestBodyError) {
+      //if (error instanceof InvalidRequestBodyError) {
+      } catch (error) {
+        
+
+        if (error instanceof InvalidRequestBodyError) {
         const code =
           error.reason === "too-large"
             ? "tooLarge"
