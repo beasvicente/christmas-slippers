@@ -293,3 +293,46 @@ test("new invitations expire after 30 days by default", async () => {
   assert.equal(afterExpiry, null);
 });
 
+
+test("cleans stale invitation index entries after Redis record expiry", async () => {
+  const redis = createRedisMock();
+  const token = fixedToken(21);
+  const now = new Date();
+
+  await createInvitation(
+    {
+      recipientFirstName: "Temporary Guest",
+      expiresAt: new Date(now.getTime() + 60_000),
+    },
+    {
+      environment,
+      fetcher: redis.fetcher,
+      generateToken: () => token,
+      now,
+    },
+  );
+
+  const hash = hashInvitationToken(token);
+  const recordKey =
+    `christmas-slippers:invitation:v1:record:${hash}`;
+  const indexKey =
+    "christmas-slippers:invitation:v1:index";
+
+  assert.equal(redis.values.has(recordKey), true);
+  assert.equal(redis.sets.get(indexKey)?.has(hash), true);
+
+  // Simulate Redis automatically removing the expired record.
+  redis.values.delete(recordKey);
+  redis.expirations.delete(recordKey);
+
+  const listed = await listInvitationRecords({
+    environment,
+    fetcher: redis.fetcher,
+  });
+
+  assert.equal(listed.length, 0);
+
+  // Listing must also remove the orphaned index entry.
+  assert.equal(redis.sets.get(indexKey)?.has(hash), false);
+});
+
