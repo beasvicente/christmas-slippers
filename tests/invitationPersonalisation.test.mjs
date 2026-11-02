@@ -240,3 +240,56 @@ test("fails closed without exposing storage errors to invitation visitors", asyn
     fetcher: async () => new Response(null, {status: 503}),
   }), null);
 });
+
+
+test("new invitations expire after 30 days by default", async () => {
+  const redis = createRedisMock();
+  const token = fixedToken(20);
+  const createdAt = new Date("2026-11-01T12:00:00Z");
+
+  const created = await createInvitation(
+    {recipientFirstName: "Christmas Guest"},
+    {
+      environment,
+      fetcher: redis.fetcher,
+      generateToken: () => token,
+      now: createdAt,
+    },
+  );
+
+  const expectedExpiration = new Date(
+    createdAt.getTime() + 30 * 24 * 60 * 60 * 1000,
+  );
+
+  assert.equal(
+    created.record.expiresAt,
+    expectedExpiration.toISOString(),
+  );
+
+  const hash = hashInvitationToken(token);
+  const key = `christmas-slippers:invitation:v1:record:${hash}`;
+
+  assert.equal(
+    redis.expirations.get(key),
+    Math.ceil(expectedExpiration.getTime() / 1000),
+  );
+
+  const beforeExpiry = await resolveInvitation(token, {
+    environment,
+    fetcher: redis.fetcher,
+    now: new Date(expectedExpiration.getTime() - 1000),
+  });
+
+  assert.deepEqual(beforeExpiry, {
+    recipientFirstName: "Christmas Guest",
+  });
+
+  const afterExpiry = await resolveInvitation(token, {
+    environment,
+    fetcher: redis.fetcher,
+    now: expectedExpiration,
+  });
+
+  assert.equal(afterExpiry, null);
+});
+
